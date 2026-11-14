@@ -1,0 +1,87 @@
+# ==========================================
+# Unity Standard Ignores
+# ==========================================
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+
+# Asset meta check
+*.private
+*.private.meta
+*.meta.temp
+
+# Unity CrashHandler
+Sysinfo*
+crash*.dmp
+
+# Unity Build artifacts
+*.apk
+*.aab
+*.unitypackage
+
+# ==========================================
+# Visual Studio / VS Code / Rider
+# ==========================================
+.vs/
+.vscode/
+.idea/
+ExportedObj/
+.consulo/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# ==========================================
+# Python & Conda / Virtualenv
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ==========================================
+# Project Specific (Secrets & Heavy Artifacts & Docs)
+# ==========================================
+.env
+runs/
+*.log
+docs/
