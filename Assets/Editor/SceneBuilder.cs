@@ -34,6 +34,15 @@ namespace RLPlatform.EditorTools
             var cubeRb = cube.AddComponent<Rigidbody>();
             cubeRb.isKinematic = true;     // 구체와 부딪혀도 밀리지 않는 고정 목표
 
+            // 장애물 벽 (기본 길이 3m, 두께 0.5m)
+            GameObject wall = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            wall.name = "ObstacleWall";
+            wall.transform.localScale = new Vector3(3f, 1.2f, 0.5f);
+            wall.transform.position = new Vector3(0f, 0.6f, 0f);
+            wall.GetComponent<Renderer>().sharedMaterial = MakeMaterial("Wall", new Color(0.6f, 0.6f, 0.65f));
+            var wallRb = wall.AddComponent<Rigidbody>();
+            wallRb.isKinematic = true;
+
             GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
             sphere.name = "Agent";
             sphere.transform.position = new Vector3(-3f, 0.51f, -3f);
@@ -45,6 +54,7 @@ namespace RLPlatform.EditorTools
             var env = envObj.AddComponent<CubeSphereEnv>();
             env.floor = floor.transform;
             env.target = cube.transform;
+            env.wall = wall.transform;
             env.sphere = rb;
             var sensor = sphere.AddComponent<SphereContactSensor>();
             sensor.env = env;
@@ -74,7 +84,7 @@ namespace RLPlatform.EditorTools
         [MenuItem("RL/Build Windows Player")]
         public static void BuildPlayer()
         {
-            if (!File.Exists(ScenePath)) BuildScene();
+            BuildScene(); // 씬을 항상 최신 코드로 다시 빌드 후 플레이어 빌드 진행
             Directory.CreateDirectory(Path.GetDirectoryName(BuildPath));
             var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
             {

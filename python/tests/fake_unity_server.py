@@ -45,8 +45,8 @@ class FakeUnityServer:
             while True:
                 (n,) = struct.unpack(">I", self._recv(c, 4))
                 req = json.loads(self._recv(c, n))
-                resp = {"ok": True, "error": "", "env_name": "Fake", "obs_dim": 6, "act_dim": 2,
-                        "act_low": [-1, -1], "act_high": [1, 1], "obs": [0] * 6, "reward": 0.0,
+                resp = {"ok": True, "error": "", "env_name": "Fake", "obs_dim": 10, "act_dim": 2,
+                        "act_low": [-1, -1], "act_high": [1, 1], "obs": [0] * 10, "reward": 0.0,
                         "done": False, "truncated": False, "success": False, "fell": False, "step": 0,
                         "distance": 0.0}
                 cmd = req["cmd"]
@@ -67,7 +67,7 @@ class FakeUnityServer:
                     resp["step"] = step
                     resp["distance"] = d
                 rel = goal - pos
-                resp["obs"] = [rel[0], rel[1], 0, 0, pos[0], pos[1]]
+                resp["obs"] = [rel[0], rel[1], 0, 0, pos[0], pos[1], 0, 0, 0, 0]
                 data = json.dumps(resp).encode()
                 c.sendall(struct.pack(">I", len(data)) + data)
         except (ConnectionError, OSError):

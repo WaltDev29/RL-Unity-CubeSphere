@@ -157,17 +157,19 @@ python -m rl.cli compare ..\runs\run_sac ..\runs\run_td3 --out comparison.png
 
 ## 🧠 상태 공간 및 보상 체계
 
-### Observation Space (6차원, 정규화)
+### Observation Space (10차원, 정규화)
 | Index | 상태 내용 | 정규화 수식 | 설계 의도 |
 |:---:|---|---|---|
 | **0 ~ 1** | 목표 큐브 상대 위치 ($x, z$) | $(p_{\text{target}} - p_{\text{sphere}}) / \text{floor\_size}$ | 목표의 방향과 거리 정보를 동시에 제공하며, 절대 좌표 불변성 보장 |
 | **2 ~ 3** | 구체 선형 속도 ($v_x, v_z$) | $v / \text{max\_speed}$ | 물리 관성 제어 및 목표 도달 전 감속 제동 타이밍 인지 |
 | **4 ~ 5** | 구체 절대 위치 ($x, z$) | $p_{\text{sphere}} / (\text{floor\_size} / 2)$ | 바닥 경계선 접근 시 추락 위험 인지 |
+| **6 ~ 7** | 장애물 벽 표면 상대 위치 ($w_x, w_z$) | $(p_{\text{closest\_wall}} - p_{\text{sphere}}) / \text{floor\_size}$ | 벽과의 최단 거리 및 충돌 위험 인지 |
+| **8 ~ 9** | 우회 통로(좌/우 통로 중 최근접) 상대 벡터 | $(p_{\text{opening}} - p_{\text{sphere}}) / \text{floor\_size}$ | 벽에 가로막혔을 때 우회할 탈출구 방향 안내 |
 
 ### Reward Function
-$$r_t = w_{\text{approach}} \cdot (d_{t-1} - d_t) - c_{\text{step}} - c_{\text{action}} \|a_t\|^2 + R_{\text{terminal}}$$
+$$r_t = w_{\text{approach}} \cdot \max(0, d_{\text{best}} - d_t) - c_{\text{step}} - c_{\text{action}} \|a_t\|^2 + R_{\text{terminal}}$$
 
-* **접근 보상 ($w_{\text{approach}}=1.0$):** 이전 스텝 거리와 현재 스텝 거리의 차분. 제자리 진동 보상 해킹을 원천 방지하는 Potential Shaping 구조
+* **역대 최단 거리 갱신 보상 ($w_{\text{approach}}=1.0$):** 에피소드 내에서 달성한 최소 거리 신기록을 갱신한 양만큼만 보상 지급. 뒤로 물러났다가 다시 전진하며 보상을 반복 취득하는 행위(보상 해킹/뱅뱅 도는 현상) 원천 차단
 * **스텝 시간 페널티 ($c_{\text{step}}=0.01$):** 최단 경로/시간 내 도달 유도
 * **행동 크기 페널티 ($c_{\text{action}}=0.001$):** 불필요한 과도한 Force 입력 억제
 * **성공 보상 ($R_{\text{success}}=+10.0$):** 큐브와 물리적 접촉 시 부여 및 에피소드 종료

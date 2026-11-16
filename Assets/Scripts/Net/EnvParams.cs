@@ -22,8 +22,11 @@ namespace RLPlatform
         public float w_approach = 1f;
         public float r_success = 10f;
         public float r_fall = 10f;
+        public float r_wall_hit = 1f;       // 벽 충돌 페널티
         public float c_step = 0.01f;
         public float c_action = 0.001f;
+        public float wall_width = 3f;       // 벽 가로 길이 (반으로 축소: 6m -> 3m)
+        public float wall_thickness = 0.5f; // 벽 두께
         // 0 이면 제한 없음(학습용 최고속도), >0 이면 초당 step 수를 제한(관찰/평가용)
         public float max_steps_per_sec = 0f;
     }

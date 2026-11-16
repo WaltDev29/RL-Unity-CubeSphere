@@ -57,8 +57,11 @@ class Config:
     w_approach: float
     r_success: float
     r_fall: float
+    r_wall_hit: float
     c_step: float
     c_action: float
+    wall_width: float
+    wall_thickness: float
     # 연결
     unity_host: str
     unity_port: int
@@ -96,8 +99,11 @@ class Config:
             "w_approach": self.w_approach,
             "r_success": self.r_success,
             "r_fall": self.r_fall,
+            "r_wall_hit": self.r_wall_hit,
             "c_step": self.c_step,
             "c_action": self.c_action,
+            "wall_width": self.wall_width,
+            "wall_thickness": self.wall_thickness,
             "max_steps_per_sec": steps_per_sec,
         }
 

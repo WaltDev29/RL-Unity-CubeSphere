@@ -48,11 +48,11 @@ def test_client_protocol_roundtrip(cfg):
     try:
         env = UnityEnv("127.0.0.1", srv.port, 3, 3, cfg.env_params(0))
         env.connect()
-        assert env.observation_space.shape == (6,) and env.action_space.shape == (2,)
+        assert env.observation_space.shape == (10,) and env.action_space.shape == (2,)
         obs, _ = env.reset(1)
-        assert obs.shape == (6,)
+        assert obs.shape == (10,)
         obs, r, term, trunc, info = env.step([0.1, 0.1])
-        assert obs.shape == (6,) and isinstance(r, float) and "success" in info
+        assert obs.shape == (10,) and isinstance(r, float) and "success" in info
         env.close()
     finally:
         srv.close()
@@ -81,18 +81,18 @@ def test_disconnect_detected(cfg):
 def test_agent_update_and_save(cfg, algo, tmp_path):
     cfg.algorithm = algo
     dev = torch.device("cpu")
-    agent = make_agent(algo, 6, 2, cfg, dev)
-    buf = ReplayBuffer(100, 6, 2, dev)
+    agent = make_agent(algo, 10, 2, cfg, dev)
+    buf = ReplayBuffer(100, 10, 2, dev)
     for _ in range(50):
-        buf.add(np.random.randn(6), np.random.uniform(-1, 1, 2), 1.0, np.random.randn(6), False)
+        buf.add(np.random.randn(10), np.random.uniform(-1, 1, 2), 1.0, np.random.randn(10), False)
     for _ in range(4):
         out = agent.update(buf.sample(16))
     assert all(torch.isfinite(v).all() for v in out.values())
-    a = agent.select_action(np.zeros(6, np.float32), deterministic=True)
+    a = agent.select_action(np.zeros(10, np.float32), deterministic=True)
     assert a.shape == (2,) and np.abs(a).max() <= 1.0
-    agent2 = make_agent(algo, 6, 2, cfg, dev)
+    agent2 = make_agent(algo, 10, 2, cfg, dev)
     agent2.load_state_dict(agent.state_dict())
-    assert np.allclose(agent2.select_action(np.zeros(6, np.float32), True), a, atol=1e-6)
+    assert np.allclose(agent2.select_action(np.zeros(10, np.float32), True), a, atol=1e-6)
 
 
 def test_buffer_state_roundtrip():
